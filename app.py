@@ -11,7 +11,7 @@ if uploaded_file is not None:
 
     if st.button("Verify ID"):
         files = {"file": uploaded_file.getvalue()}
-        response = requests.post("http://your-fastapi-url.com/predict/", files=files)
+        response = requests.post("https://huggingface.co/spaces/Kenjinx07/onnx-model/tree/main", files=files)
 
         if response.status_code == 200:
             data = response.json()
