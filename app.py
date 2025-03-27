@@ -1,24 +1,16 @@
 import streamlit as st
 import requests
-from PIL import Image
 
-st.title("ID Verification System")
+st.title("ID Verification System with Cloudinary")
 
-uploaded_file = st.file_uploader("Upload Your ID", type=["jpg", "png", "jpeg"])
+uploaded_file = st.file_uploader("Upload your ID for verification", type=["jpg", "png"])
 
-if uploaded_file is not None:
-    st.image(uploaded_file, caption="Uploaded ID", use_column_width=True)
+if uploaded_file:
+    files = {"file": uploaded_file.getvalue()}
+    response = requests.post("https://huggingface.co/spaces/Kenjinx07/Fast-api/verify", files=files)
 
-    if st.button("Verify ID"):
-        files = {"file": uploaded_file.getvalue()}
-        response = requests.post("https://huggingface.co/spaces/Kenjinx07/Fast-api", files=files)
-
-        if response.status_code == 200:
-            data = response.json()
-            if data["verified"]:
-                st.success("✅ Verification Successful!")
-                st.write("Extracted Text:", data["extracted_text"])
-            else:
-                st.error("❌ Verification Failed!")
-        else:
-            st.error("Error in API request!")
+    if response.status_code == 200:
+        result = response.json()
+        st.write("Verification Score:", result["verification_score"])
+    else:
+        st.write("Verification failed")
